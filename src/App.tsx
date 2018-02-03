@@ -1,53 +1,28 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+import { StackNavigator } from 'react-navigation';
+import TaskList from './screens/TaskList';
+import TaskCreate from './screens/TaskCreate';
+import TaskEdit from './screens/TaskEdit';
 
-import * as React from 'react';
-import { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-export default class App extends Component<{}> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+export default StackNavigator({
+	List: {
+		screen: TaskList,
+		path: 'list',
+		navigationOptions: {
+			title: 'Task List',
+		},
+	},
+	Create: {
+		screen: TaskCreate,
+		path: 'create',
+		navigationOptions: {
+			title: 'New task'
+		},
+	},
+	Edit: {
+		screen: TaskEdit,
+		path: 'edit/:id',
+		navigationOptions: ({ navigation }) => ({
+			title: `Edit task id ${navigation.state.params.id}`
+		}),
+	},
+})
