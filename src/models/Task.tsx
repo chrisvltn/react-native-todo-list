@@ -91,7 +91,6 @@ export class Task {
 		const update = !!(this[primaryKey] && (await Task.findById(this[primaryKey] as any)))
 		const keys = Task.KEYS.filter(k => !k.primary).map(k => k.name)
 		const values = keys.map(k => this[k])
-		if (update) values.push(this[primaryKey])
 
 		const updateWhere = {}
 		updateWhere[primaryKey] = this[primaryKey]
