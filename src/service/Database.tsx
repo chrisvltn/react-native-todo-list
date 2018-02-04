@@ -17,12 +17,13 @@ export class Database {
 	async connect() {
 		if (this.db) return this.db;
 		this.db = await new Promise((resolve, reject) => {
-			const db = SQLite.openDatabase({ name: 'tasklist.db' }, () => resolve(db), err => reject(err))
+			const db = SQLite.openDatabase({ name: 'tasklist4.db' }, () => resolve(db), err => reject(err))
 		})
 		return this.db
 	}
 
 	async query(sql: string, params: any[] = []): Promise<SQLResult> {
+		params = this.treatParams(params)
 		return new Promise<SQLResult>(resolve => {
 			this.db.transaction(async tx => {
 				const [newTx, results] = await (new Promise((resolve, reject) => {
@@ -80,6 +81,29 @@ export class Database {
 			params: values,
 			sql: sql,
 		}
+	}
+
+	private treatParams(params: any[]): any[] {
+		const newParams = []
+		params.forEach(p => {
+			switch (typeof p) {
+				case 'string':
+					newParams.push(p.trim()); break;
+				case 'boolean':
+					newParams.push(p ? 1 : 0); break;
+				case 'object':
+					if (p instanceof Date) {
+						newParams.push(p.toISOString())
+					} else {
+						try { newParams.push(JSON.stringify(p)) }
+						catch (e) { newParams.push(p) }
+					}
+					break;
+				default:
+					newParams.push(p)
+			}
+		})
+		return newParams
 	}
 }
 
