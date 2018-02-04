@@ -18,9 +18,9 @@ export class Task {
 	done: boolean
 	create_date: Date
 
-	static parse<T>(data: ObjectKeys<Task>): Task;
-	static parse<T>(data: ObjectKeys<Task>[]): Task[];
-	static parse<T>(data: (ObjectKeys<Task> | ObjectKeys<Task>[])): (Task | Task[]) {
+	static parse(data: ObjectKeys<Task>): Task;
+	static parse(data: ObjectKeys<Task>[]): Task[];
+	static parse(data: (ObjectKeys<Task> | ObjectKeys<Task>[])): (Task | Task[]) {
 		if (Array.isArray(data)) {
 			return data.map(i => Task.parse(i))
 		}
@@ -29,7 +29,11 @@ export class Task {
 		Task.KEYS.forEach(key => {
 			if (typeof data[key.name] == 'undefined') return;
 			if (key.type == Date && data[key.name]) {
-				task[key.name] = moment(data[key.name] as any).toDate()
+				try {
+					task[key.name] = moment(data[key.name] as any).toDate()
+				} catch (e) { console.warn('Not possible to convert date type') }
+			} else if (data[key.name] === null) {
+				task[key.name] = null
 			} else {
 				task[key.name] = key.type(data[key.name]) as any
 			}
@@ -70,7 +74,7 @@ export class Task {
 	static async findAll(): Promise<Task[]> {
 		const db = await Database.getInstance()
 		const rows = await db.queryAndGetRows(`SELECT * FROM ${Task.TABLE_NAME}`)
-		return rows.map(row => Task.parse(row))
+		return Task.parse(rows)
 	}
 
 	static async findById(id: number): Promise<Task> {
