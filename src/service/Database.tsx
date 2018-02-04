@@ -17,7 +17,7 @@ export class Database {
 	async connect() {
 		if (this.db) return this.db;
 		this.db = await new Promise((resolve, reject) => {
-			const db = SQLite.openDatabase({ name: 'tasklist4.db' }, () => resolve(db), err => reject(err))
+			const db = SQLite.openDatabase({ name: 'tasklist5.db' }, () => resolve(db), err => reject(err))
 		})
 		return this.db
 	}
@@ -94,9 +94,11 @@ export class Database {
 				case 'object':
 					if (p instanceof Date) {
 						newParams.push(p.toISOString())
-					} else {
+					} else if (p !== null) {
 						try { newParams.push(JSON.stringify(p)) }
 						catch (e) { newParams.push(p) }
+					} else {
+						newParams.push(p)
 					}
 					break;
 				default:
