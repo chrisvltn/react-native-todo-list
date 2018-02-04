@@ -43,17 +43,17 @@ export class Task {
 
 		const keys = Task.KEYS.map(k => {
 			const name = k.name
-			const primary = k.primary ? 'PRIMARY KEY' : ''
+			const primary = k.primary ? 'PRIMARY KEY AUTOINCREMENT' : ''
 			let type = 'TEXT'
 			switch (k.type) {
 				case Number:
-					type = 'INT'; break;
+					type = 'INTEGER'; break;
 				case String:
 					type = 'VARCHAR(255)'; break;
 				case Date:
 					type = 'TEXT'; break;
 				case Boolean:
-					type = 'INT'; break;
+					type = 'INTEGER'; break;
 			}
 			return [name, type, primary].join(' ')
 		})
