@@ -1,4 +1,4 @@
-# React Nativa Todo List Demo Project
+# React Native Todo List Demo Project
 
 ## Installation
 
