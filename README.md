@@ -4,13 +4,14 @@
 
 1. Clone this repo
 2. Run `yarn install` or `npm install`
-3. Ensure `%ANDROID_HOME%` environment variable is set
-4. Run `yarn run run:android` or `yarn run run:android:device` (to run in a device)
+3. Run `yarn run compile` or `npm run compile`
+4. Ensure `%ANDROID_HOME%` environment variable is set
+5. Run `yarn run run:android` or `yarn run run:android:device` (to run in a device)
 
 ## Features
 
 - Page navigation
   - Using `react-native-navigation`
-- Typescript implementation (tsx)
 - Database implementation
   - Using `react-native-sqlite-storage`
+- Typescript implementation (tsx)
