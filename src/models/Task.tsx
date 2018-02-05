@@ -18,9 +18,10 @@ export class Task {
 	done: boolean
 	create_date: Date
 
-	static parse(data: ObjectKeys<Task>): Task;
-	static parse(data: ObjectKeys<Task>[]): Task[];
-	static parse(data: (ObjectKeys<Task> | ObjectKeys<Task>[])): (Task | Task[]) {
+	static parse(data?: ObjectKeys<Task>): Task;
+	static parse(data?: ObjectKeys<Task>[]): Task[];
+	static parse(data?: (ObjectKeys<Task> | ObjectKeys<Task>[])): (Task | Task[]) {
+		data = data || {}
 		if (Array.isArray(data)) {
 			return data.map(i => Task.parse(i))
 		}
