@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, KeyboardAvoidingView, ViewStyle } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
+import { Task } from '../models/Task';
+import Input from '../components/Input';
 
 const instructions = Platform.select({
 	ios: 'Press Cmd+R to reload,\n' +
@@ -10,23 +12,61 @@ const instructions = Platform.select({
 		'Shake or press menu button for dev menu',
 });
 
-export default class TaskEdit extends Component<{ navigation: NavigationScreenProp<{ params: { id: number } }, {}> }> {
-	render() {
+export default class TaskEdit extends Component<{
+	navigation: NavigationScreenProp<{
+		params: {
+			id: number,
+			callback?: Function,
+		}
+	}, {}>,
+}, { task: Task }> {
+
+	constructor(a, b) {
+		super(a, b)
+		this.state = { task: Task.parse() }
+	}
+
+	async componentDidMount() {
 		const { id } = this.props.navigation.state.params;
+		if (!id) return;
+		this.setState({
+			task: await Task.findById(id)
+		})
+	}
+
+	updateTask(task: Task, key: keyof Task, value: any) {
+		task[key] = value
+		task = Task.parse(task)
+		this.setState({ task: task })
+	}
+
+	async saveTask(task: Task) {
+		const { navigation } = this.props
+		const { callback } = navigation.state.params
+		await task.save()
+		if (callback) setTimeout(() => callback(task), 1000)
+		navigation.goBack()
+	}
+
+	render() {
+		const { task } = this.state;
 
 		return (
 			<View style={styles.container}>
-				<Text style={styles.welcome}>
-					Welcome to React Native!
-					Task Edit Page
-					Id: {id}
-				</Text>
-				<Text style={styles.instructions}>
-					To get started, edit App.js
-				</Text>
-				<Text style={styles.instructions}>
-					{instructions}
-				</Text>
+				<Input label="Title"
+					value={task.title}
+					autoFocus={true}
+					placeholder="To do homework..."
+					onTextChange={v => this.updateTask(task, 'title', v)}></Input>
+				<Input label="Description"
+					value={task.description}
+					placeholder="Go home and do homework"
+					onTextChange={v => this.updateTask(task, 'description', v)}></Input>
+
+				<KeyboardAvoidingView style={styles.btnView}>
+					<Button title="Salvar"
+						onPress={() => this.saveTask(task)}></Button>
+				</KeyboardAvoidingView>
 			</View>
 		);
 	}
@@ -34,19 +74,16 @@ export default class TaskEdit extends Component<{ navigation: NavigationScreenPr
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#F5FCFF',
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
 	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10,
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5,
-	},
+	btnView: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+	} as ViewStyle,
 });
