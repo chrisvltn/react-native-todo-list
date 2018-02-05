@@ -18,6 +18,10 @@ export class Task {
 	done: boolean
 	create_date: Date
 
+	/**
+	 * Convert an object to a Task instance
+	 * @param data Task params
+	 */
 	static parse(data?: ObjectKeys<Task>): Task;
 	static parse(data?: ObjectKeys<Task>[]): Task[];
 	static parse(data?: (ObjectKeys<Task> | ObjectKeys<Task>[])): (Task | Task[]) {
@@ -43,6 +47,9 @@ export class Task {
 		return task
 	}
 
+	/**
+	 * Prepare Task table in the database
+	 */
 	static async prepare(): Promise<any> {
 		const db = await Database.getInstance()
 
@@ -72,12 +79,19 @@ export class Task {
 		return db.query(sql)
 	}
 
+	/**
+	 * Find all stored tasks
+	 */
 	static async findAll(): Promise<Task[]> {
 		const db = await Database.getInstance()
 		const rows = await db.queryAndGetRows(`SELECT * FROM ${Task.TABLE_NAME}`)
 		return Task.parse(rows)
 	}
 
+	/**
+	 * Find a task
+	 * @param id Task id
+	 */
 	static async findById(id: number): Promise<Task> {
 		const db = await Database.getInstance()
 		const primaryKey = Task.KEYS.find(k => k.primary).name
@@ -86,6 +100,9 @@ export class Task {
 		return Task.parse(rows[0])
 	}
 
+	/**
+	 * Save (insert or update) a task in the database
+	 */
 	async save(): Promise<Task> {
 		const db = await Database.getInstance()
 		const primaryKey = Task.KEYS.find(k => k.primary).name
@@ -104,6 +121,9 @@ export class Task {
 		return this
 	}
 
+	/**
+	 * Delete a task in the database
+	 */
 	async delete(): Promise<Task> {
 		const db = await Database.getInstance()
 		const primaryKey = Task.KEYS.find(k => k.primary).name
