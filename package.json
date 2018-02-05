@@ -6,6 +6,7 @@
     "test": "jest",
     "start": "concurrently \"npm run tsc:w\" \"npm run react-native:start\"",
     "react-native:start": "node node_modules/react-native/local-cli/cli.js start",
+    "compile": "tsc",
     "tsc:w": "tsc --watch",
     "run:android": "react-native run-android",
     "run:android:device": "%ANDROID_HOME%/platform-tools/adb.exe reverse tcp:8081 tcp:8081 && react-native run-android"
