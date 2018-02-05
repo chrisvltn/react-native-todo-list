@@ -4,7 +4,11 @@ import { View, Text, Switch, StyleSheet, ViewStyle, TextStyle, TouchableOpacity 
 import { Task } from "../models/Task";
 import { NavigationScreenProp } from 'react-navigation';
 
-export default class TaskListItem extends Component<{ navigation: NavigationScreenProp<{}, {}>, task: Task }, { task: Task }> {
+export default class TaskListItem extends Component<{
+	task: Task,
+	onPress?: (task: Task) => any,
+}, { task: Task }> {
+
 	constructor(a, b) {
 		super(a, b)
 		this.state = {
@@ -19,17 +23,13 @@ export default class TaskListItem extends Component<{ navigation: NavigationScre
 		this.setState({ task: task })
 	}
 
-	openTask(task: Task) {
-		const { navigation } = this.props
-		navigation.navigate('Edit', { id: task.id })
-	}
-
 	render() {
 		const { task } = this.state
+		const { onPress } = this.props
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity style={styles.textView}
-					onPress={() => this.openTask(task)}>
+					onPress={() => (onPress || function () { })(task)}>
 					<Text style={styles.title}
 						numberOfLines={1}>
 						{task.title}
